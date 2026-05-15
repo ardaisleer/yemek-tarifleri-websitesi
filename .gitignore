@@ -1,3 +1,4 @@
 uploads/*
+!.gitkeep
 config.php
 baglanti.php
