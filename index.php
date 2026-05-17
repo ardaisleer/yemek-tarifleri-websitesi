@@ -1,5 +1,5 @@
 <?php
-session_start();
+session_start(); // Oturumu başlat
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,6 +9,7 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ana Sayfa</title>
     <style>
+        /* Sayfa düzeni ve stil */
         body {
             font-family: Arial, sans-serif;
             margin: 0;

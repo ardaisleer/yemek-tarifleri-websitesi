@@ -1,6 +1,7 @@
 <?php
-session_start();
+session_start(); // Oturumu başlat
 
+// Geçerli bir tarif ID'si kontrolü
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header('Location: index.php');
     exit;
@@ -8,13 +9,15 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 
 $id = $_GET['id'];
 
-require_once 'baglanti.php';
+require_once 'baglanti.php'; // Veritabanı bağlantısını dahil et
 
+// Tarif bilgilerini ve yazar adını veritabanından çek
 $stmt = $pdo->prepare("SELECT tarifler.*, kullanicilar.kullanici_adi FROM tarifler INNER JOIN kullanicilar ON tarifler.yazar_id = kullanicilar.id WHERE tarifler.id = :id");
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $tarif = $stmt->fetch(PDO::FETCH_ASSOC);
 
+// Tarif bulunamazsa ana sayfaya yönlendir
 if (!$tarif) {
     header('Location: index.php');
     exit;
@@ -28,6 +31,7 @@ if (!$tarif) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($tarif['baslik']); ?> - Tarif Detayı</title>
     <style>
+        /* Sayfa düzeni ve stil */
         * {
             box-sizing: border-box;
         }

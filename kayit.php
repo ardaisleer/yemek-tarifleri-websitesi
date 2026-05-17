@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kayıt Ol</title>
     <style>
+        /* Sayfa düzeni ve stil */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
@@ -79,20 +80,21 @@
         </form>
         <?php
 
-        session_start(); // 
+        session_start(); // Oturumu başlat
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            $kullanici_adi = $_POST['kullanici_adi'];
-
-            $sifre = $_POST['sifre'];
-
-            require_once 'baglanti.php';
-
-            $hashed_password = password_hash($sifre, PASSWORD_DEFAULT);
-
+            $kullanici_adi = $_POST['kullanici_adi']; // Kullanıcı adı al
+        
+            $sifre = $_POST['sifre']; // Şifre al
+        
+            require_once 'baglanti.php'; // Veritabanı bağlantısını dahil et
+        
+            $hashed_password = password_hash($sifre, PASSWORD_DEFAULT); // Şifreyi hashle
+        
             try {
 
+                // Kullanıcıyı veritabanına ekle
                 $stmt = $pdo->prepare("INSERT INTO kullanicilar (kullanici_adi, sifre) VALUES (:kullanici_adi, :sifre)");
 
                 $stmt->bindParam(':kullanici_adi', $kullanici_adi);
@@ -101,20 +103,19 @@
 
                 $stmt->execute();
 
-
-
+                // Oturum bilgilerini ayarla
                 $_SESSION['kullanici_id'] = $pdo->lastInsertId();
 
                 $_SESSION['kullanici_adi'] = $kullanici_adi;
 
-
-
+                // Ana sayfaya yönlendir
                 header('Location: index.php');
 
                 exit;
 
             } catch (PDOException $e) {
 
+                // Kullanıcı adı zaten varsa hata mesajı göster
                 if ($e->getCode() == 23000) {
 
                     echo '<p class="error">Bu kullanıcı adı zaten alınmış.</p>';

@@ -1,51 +1,51 @@
 <?php
-session_start();
+session_start(); // Oturumu başlat
 
-
+// Geçerli bir tarif ID'si kontrolü
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    header('Location: profil.php');
+    header('Location: profil.php'); // Profil sayfasına yönlendir
     exit;
 }
 $id = $_GET['id'];
 
+require_once 'baglanti.php'; // Veritabanı bağlantısını dahil et
 
-require_once 'baglanti.php';
-
-
+// Tarif bilgilerini veritabanından çek
 $stmt = $pdo->prepare("SELECT * FROM tarifler WHERE id = :id");
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $tarif = $stmt->fetch(PDO::FETCH_ASSOC);
 
+// Tarif bulunamazsa profil sayfasına yönlendir
 if (!$tarif) {
     header('Location: profil.php');
     exit;
 }
 
-
+// Form gönderildiğinde tarif güncelleme işlemi
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $baslik = $_POST['baslik'];
-    $icerik = $_POST['icerik'];
-    $kategori = $_POST['kategori'];
-    $yeniResim = $_FILES['resim'];
+    $baslik = $_POST['baslik']; // Yeni başlık
+    $icerik = $_POST['icerik']; // Yeni içerik
+    $kategori = $_POST['kategori']; // Yeni kategori
+    $yeniResim = $_FILES['resim']; // Yeni resim dosyası
 
-
+    // Yeni resim yüklendiyse işlemleri yap
     if ($yeniResim['error'] === UPLOAD_ERR_OK) {
-        $dosyaAdi = time() . '_' . basename($yeniResim['name']);
-        $hedefYol = 'uploads/' . $dosyaAdi;
-        move_uploaded_file($yeniResim['tmp_name'], $hedefYol);
+        $dosyaAdi = time() . '_' . basename($yeniResim['name']); // Benzersiz dosya adı oluştur
+        $hedefYol = 'uploads/' . $dosyaAdi; // Yükleme yolu
+        move_uploaded_file($yeniResim['tmp_name'], $hedefYol); // Dosyayı yükle
 
-
+        // Eski resmi sil
         if (!empty($tarif['gorsel_url']) && file_exists($tarif['gorsel_url'])) {
             unlink($tarif['gorsel_url']);
         }
 
-        $guncelResimYolu = $hedefYol;
+        $guncelResimYolu = $hedefYol; // Yeni resim yolu
     } else {
-        $guncelResimYolu = $tarif['gorsel_url'];
+        $guncelResimYolu = $tarif['gorsel_url']; // Eski resim yolunu koru
     }
 
-
+    // Tarif bilgilerini güncelle
     $updateStmt = $pdo->prepare("UPDATE tarifler SET baslik = :baslik, icerik = :icerik, kategori = :kategori, gorsel_url = :gorsel_url WHERE id = :id");
     $updateStmt->bindParam(':baslik', $baslik);
     $updateStmt->bindParam(':icerik', $icerik);

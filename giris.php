@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Giriş Yap</title>
     <style>
+        /* Sayfa düzeni ve stil */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;

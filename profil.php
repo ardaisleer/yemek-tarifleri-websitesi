@@ -1,7 +1,7 @@
 <?php
-session_start();
+session_start(); // Oturumu başlat
 
-
+// Kullanıcı giriş yapmamışsa giriş sayfasına yönlendir
 if (!isset($_SESSION['kullanici_id'])) {
     header('Location: giris.php');
     exit;
@@ -15,6 +15,7 @@ if (!isset($_SESSION['kullanici_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profilim</title>
     <style>
+        /* Sayfa düzeni ve stil */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
